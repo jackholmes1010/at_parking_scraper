@@ -91,3 +91,11 @@ export interface UsersResponse {
     TwoFactorEnabled: boolean
     LockoutEnd: null
 }
+
+export interface ErrorResponse {
+    ScreenMessage: string
+    Message: string
+    MoreInfo: string
+    GeneratedIn: null
+    ServiceResponseAction: null
+}

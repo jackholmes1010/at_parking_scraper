@@ -1,12 +1,14 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { getAuthorizationOptions } from "./auth"
 import {
     AuthorizationOptions,
+    ErrorResponse,
     SessionsResponse,
     TicketsResponse,
     UsersResponse,
     VehiclesResponse,
 } from "./types"
+import * as E from "fp-ts/Either"
 
 export async function getSessions(
     username: string,
@@ -61,32 +63,37 @@ export async function createTicket(
     password: string,
     duration: number,
     zoneId: number
-): Promise<unknown> {
+): Promise<E.Either<ErrorResponse, unknown>> {
     const auth = await getAuthorizationOptions(username, password)
     const [vehicles, user] = await Promise.all([
         getVehicles(username, password),
         getUser(username, password),
     ])
+
     const vehicle = vehicles.VehicleList[0]
     const phoneNumber = user.MobilePhones[0]
-    const response = await axios.post<unknown>(
-        `https://atpark.at.govt.nz/api/PTProxy/FEAPITickets?phoneNumber=${phoneNumber}`,
-        {
-            Duration: duration,
-            SmsReminder: true,
-            DrivingReminder: false,
-            ZoneName: zoneId,
-            PhoneNumber: phoneNumber,
-            VehiclePlate: vehicle.NumberPlate,
-            VehicleId: vehicle.VehicleId,
-            MethodOfCapture: 18,
-        },
-        {
-            headers: getAuthHeaders(auth),
-        }
-    )
 
-    return response.data
+    const payload = {
+        Duration: duration,
+        SmsReminder: true,
+        DrivingReminder: false,
+        ZoneName: zoneId,
+        PhoneNumber: phoneNumber,
+        VehiclePlate: vehicle.NumberPlate,
+        VehicleId: vehicle.VehicleId,
+        MethodOfCapture: 18,
+    }
+
+    try {
+        const response = await axios.post<unknown>(
+            `https://atpark.at.govt.nz/api/PTProxy/FEAPITickets?phoneNumber=${phoneNumber}`,
+            payload,
+            { headers: getAuthHeaders(auth) }
+        )
+        return E.right(response.data)
+    } catch (err) {
+        return E.left((err as AxiosError).response?.data as ErrorResponse)
+    }
 }
 
 export async function getVehicles(
@@ -115,6 +122,6 @@ function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
 const username = "jackholmes5194@gmail.com"
 const password = "wcn3^e*KypnL*%=]y8"
 
-createTicket(username, password, 121033, 1).then((response) =>
-    console.log(response)
-)
+createTicket(username, password, 10, 121033)
+    .then((response) => console.log(response))
+    .catch((err) => console.log(err))
