@@ -1,15 +1,20 @@
 {
-  "name": "parking_scaper",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "puppeteer": "^10.0.0"
-  }
+    "name": "parking_scaper",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "ts-node index.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "puppeteer": "^10.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^15.12.4",
+        "prettier": "^2.3.1",
+        "ts-node": "^10.0.0"
+    }
 }
