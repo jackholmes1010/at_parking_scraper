@@ -127,9 +127,9 @@ if (!username || !password) {
     throw new Error("Set AT_USERNAME and AT_PASSWORD")
 }
 
-cron.schedule("*/1 * * * *", () => {
+cron.schedule("*/30 * * * *", () => {
     console.log("Creating ticket")
-    createTicket(username, password, 1, 121033)
+    createTicket(username, password, 15, 121033)
         .then((response) => console.log(response))
         .then(() => console.log("Created ticket"))
         .catch((err) => console.log(err))
