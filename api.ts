@@ -67,7 +67,7 @@ export async function createTicket(
         getVehicles(username, password),
         getUser(username, password),
     ])
-    const vehicle = vehicles.vehicleList[0]
+    const vehicle = vehicles.VehicleList[0]
     const response = await axios.post<unknown>(
         "https://atpark.at.govt.nz/api/PTProxy/FEAPITickets",
         {

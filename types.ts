@@ -13,7 +13,7 @@ export interface AuthorizationOptions {
 }
 
 export interface VehiclesResponse {
-    vehicleList: [
+    VehicleList: [
         {
             VehicleId: number
             NumberPlate: string
