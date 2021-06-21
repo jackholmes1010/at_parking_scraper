@@ -2,10 +2,16 @@ import { AuthorizationOptions, InterceptedResponse } from "./types"
 import puppeteer from "puppeteer"
 import fs from "fs"
 
+let authorizationOptions: AuthorizationOptions | undefined = undefined
+
 export async function getAuthorizationOptions(
     username: string,
     password: string
 ): Promise<AuthorizationOptions> {
+    if (authorizationOptions) {
+        return authorizationOptions
+    }
+
     const responses = await getInterceptedResponseHeaders(username, password)
 
     const responseWithAuthorizationHeader = responses.find(
@@ -27,7 +33,7 @@ export async function getAuthorizationOptions(
     const authHeaderValue =
         responseWithAuthorizationHeader.headers["pz-authorisation"]
 
-    return {
+    authorizationOptions = {
         accessToken,
         applicationKey: "Development2013",
         applicationName: "parkingTag",
@@ -35,6 +41,8 @@ export async function getAuthorizationOptions(
         applicationVersion: "400",
         authorization: authHeaderValue,
     }
+
+    return authorizationOptions
 }
 
 async function getInterceptedResponseHeaders(
