@@ -9,6 +9,7 @@ import {
     VehiclesResponse,
 } from "./types"
 import * as E from "fp-ts/Either"
+import cron from "node-cron"
 
 export async function getSessions(
     username: string,
@@ -75,7 +76,7 @@ export async function createTicket(
 
     const payload = {
         Duration: duration,
-        SmsReminder: true,
+        SmsReminder: false,
         DrivingReminder: false,
         ZoneName: zoneId,
         PhoneNumber: phoneNumber,
@@ -126,9 +127,13 @@ if (!username || !password) {
     throw new Error("Set AT_USERNAME and AT_PASSWORD")
 }
 
-createTicket(username, password, 1, 121033)
-    .then((response) => console.log(response))
-    .catch((err) => console.log(err))
+cron.schedule("*/1 * * * *", () => {
+    console.log("Creating ticket")
+    createTicket(username, password, 1, 121033)
+        .then((response) => console.log(response))
+        .then(() => console.log("Created ticket"))
+        .catch((err) => console.log(err))
+})
 
 // getTickets(username, password)
 //     .then((response) => console.log(response))
