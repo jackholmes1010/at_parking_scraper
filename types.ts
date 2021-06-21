@@ -24,3 +24,9 @@ export interface VehiclesResponse {
         }
     ]
 }
+
+export interface SessionsResponse {
+    UserId: number
+    DeviceId: null
+    DeviceIndicator: null
+}
