@@ -122,6 +122,6 @@ function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
 const username = "jackholmes5194@gmail.com"
 const password = "wcn3^e*KypnL*%=]y8"
 
-createTicket(username, password, 10, 121033)
+createTicket(username, password, 1, 121033)
     .then((response) => console.log(response))
     .catch((err) => console.log(err))
