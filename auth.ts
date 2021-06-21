@@ -1,26 +1,34 @@
-import { AuthorizationOptions } from "./types"
+import { AuthorizationOptions, InterceptedResponse } from "./types"
 import puppeteer from "puppeteer"
+import fs from "fs"
 
 export async function getAuthorizationOptions(
     username: string,
     password: string
 ): Promise<AuthorizationOptions> {
-    const responseHeaders = await getInterceptedResponseHeaders(
-        username,
-        password
+    const responses = await getInterceptedResponseHeaders(username, password)
+
+    const responseWithAuthorizationHeader = responses.find(
+        (h) => h.headers["pz-authorisation"] !== undefined
     )
 
-    const header = responseHeaders.find(
-        (h) => h["pz-authorisation"] !== undefined
-    )
+    const accessToken = responses.find(
+        (r) => r.body && r.body.AccessToken !== undefined
+    )?.body?.AccessToken
 
-    if (!header) {
-        throw new Error("Unable to find authorisation header")
+    if (!responseWithAuthorizationHeader) {
+        throw new Error("Unable to find response with authorization header")
     }
 
-    const authHeaderValue = header["pz-authorisation"]
+    if (!accessToken) {
+        throw new Error("Unable to find response with access token")
+    }
+
+    const authHeaderValue =
+        responseWithAuthorizationHeader.headers["pz-authorisation"]
 
     return {
+        accessToken,
         applicationKey: "Development2013",
         applicationName: "parkingTag",
         applicationPlatform: "clientweb",
@@ -32,17 +40,24 @@ export async function getAuthorizationOptions(
 async function getInterceptedResponseHeaders(
     username: string,
     password: string
-): Promise<Record<string, string>[]> {
+): Promise<InterceptedResponse[]> {
     const browser = await puppeteer.launch({
         headless: true,
     })
 
     const page = await browser.newPage()
     await page.setRequestInterception(true)
-    const responseHeaders: Record<string, string>[] = []
+    const responses: InterceptedResponse[] = []
 
-    page.on("response", (r) => {
-        responseHeaders.push(r.headers())
+    page.on("response", async (r) => {
+        const headers = r.headers()
+
+        try {
+            const body = await r.json()
+            responses.push({ headers, body })
+        } catch (err) {
+            responses.push({ headers })
+        }
     })
 
     page.on("request", (request) => {
@@ -70,12 +85,12 @@ async function getInterceptedResponseHeaders(
     await page.close()
     await browser.close()
 
-    return responseHeaders
+    return responses
 }
 
 const username = "jackholmes5194@gmail.com"
 const password = "wcn3^e*KypnL*%=]y8"
 
-getAuthorizationOptions(username, password).then((response) =>
-    console.log(response)
+getInterceptedResponseHeaders(username, password).then((r) =>
+    fs.writeFileSync("responses.json", JSON.stringify(r, null, 4))
 )
