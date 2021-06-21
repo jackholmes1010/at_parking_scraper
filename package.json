@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "ts-node index.ts"
+        "start": "ts-node api.ts"
     },
     "keywords": [],
     "author": "",
@@ -13,8 +13,7 @@
         "axios": "^0.21.1",
         "fp-ts": "^2.10.5",
         "puppeteer": "^10.0.0",
-        "puppeteer-core": "^10.0.0",
-        "rimraf": "^3.0.2"
+        "puppeteer-core": "^10.0.0"
     },
     "devDependencies": {
         "@types/node": "^15.12.4",
