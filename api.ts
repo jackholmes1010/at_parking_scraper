@@ -119,8 +119,12 @@ function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
     }
 }
 
-const username = "jackholmes5194@gmail.com"
-const password = "wcn3^e*KypnL*%=]y8"
+const username = process.env.AT_USERNAME
+const password = process.env.AT_PASSWORD
+
+if (!username || !password) {
+    throw new Error("Set AT_USERNAME and AT_PASSWORD")
+}
 
 createTicket(username, password, 1, 121033)
     .then((response) => console.log(response))
