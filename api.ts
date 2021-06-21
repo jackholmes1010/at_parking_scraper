@@ -56,6 +56,38 @@ export async function getTickets(
     return response.data
 }
 
+export async function createTicket(
+    username: string,
+    password: string,
+    duration: number,
+    zoneId: number
+): Promise<unknown> {
+    const auth = await getAuthorizationOptions(username, password)
+    const [vehicles, user] = await Promise.all([
+        getVehicles(username, password),
+        getUser(username, password),
+    ])
+    const vehicle = vehicles.vehicleList[0]
+    const response = await axios.post<unknown>(
+        "https://atpark.at.govt.nz/api/PTProxy/FEAPITickets",
+        {
+            Duration: duration,
+            SmsReminder: true,
+            DrivingReminder: false,
+            ZoneName: zoneId,
+            PhoneNumber: user.MobilePhones[0],
+            VehiclePlate: vehicle.NumberPlate,
+            VehicleId: vehicle.VehicleId,
+            MethodOfCapture: 18,
+        },
+        {
+            headers: getAuthHeaders(auth),
+        }
+    )
+
+    return response.data
+}
+
 export async function getVehicles(
     username: string,
     password: string
@@ -82,4 +114,6 @@ function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
 const username = "jackholmes5194@gmail.com"
 const password = "wcn3^e*KypnL*%=]y8"
 
-getTickets(username, password).then((response) => console.log(response))
+createTicket(username, password, 121033, 1).then((response) =>
+    console.log(response)
+)
