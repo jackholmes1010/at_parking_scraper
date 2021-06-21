@@ -129,3 +129,7 @@ if (!username || !password) {
 createTicket(username, password, 1, 121033)
     .then((response) => console.log(response))
     .catch((err) => console.log(err))
+
+// getTickets(username, password)
+//     .then((response) => console.log(response))
+//     .catch((err) => console.log(err))
