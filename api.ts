@@ -10,6 +10,7 @@ import {
 } from "./types"
 import * as E from "fp-ts/Either"
 import cron from "node-cron"
+import dayjs from "dayjs"
 
 export async function getSessions(
     username: string,
@@ -127,14 +128,15 @@ if (!username || !password) {
     throw new Error("Set AT_USERNAME and AT_PASSWORD")
 }
 
-cron.schedule("*/30 * * * *", () => {
+const create = () => {
     console.log("Creating ticket")
     createTicket(username, password, 15, 121033)
         .then((response) => console.log(response))
         .then(() => console.log("Created ticket"))
         .catch((err) => console.log(err))
-})
+}
 
-// getTickets(username, password)
-//     .then((response) => console.log(response))
-//     .catch((err) => console.log(err))
+// Initially create
+create()
+
+cron.schedule("*/30 * * * *", create)
