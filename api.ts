@@ -68,14 +68,15 @@ export async function createTicket(
         getUser(username, password),
     ])
     const vehicle = vehicles.VehicleList[0]
+    const phoneNumber = user.MobilePhones[0]
     const response = await axios.post<unknown>(
-        "https://atpark.at.govt.nz/api/PTProxy/FEAPITickets",
+        `https://atpark.at.govt.nz/api/PTProxy/FEAPITickets?phoneNumber=${phoneNumber}`,
         {
             Duration: duration,
             SmsReminder: true,
             DrivingReminder: false,
             ZoneName: zoneId,
-            PhoneNumber: user.MobilePhones[0],
+            PhoneNumber: phoneNumber,
             VehiclePlate: vehicle.NumberPlate,
             VehicleId: vehicle.VehicleId,
             MethodOfCapture: 18,
