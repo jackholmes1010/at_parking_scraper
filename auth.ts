@@ -72,3 +72,10 @@ async function getInterceptedResponseHeaders(
 
     return responseHeaders
 }
+
+const username = "jackholmes5194@gmail.com"
+const password = "wcn3^e*KypnL*%=]y8"
+
+getAuthorizationOptions(username, password).then((response) =>
+    console.log(response)
+)
