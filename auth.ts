@@ -95,10 +95,3 @@ async function getInterceptedResponseHeaders(
 
     return responses
 }
-
-// const username = "jackholmes5194@gmail.com"
-// const password = "wcn3^e*KypnL*%=]y8"
-
-// getInterceptedResponseHeaders(username, password).then((r) =>
-//     fs.writeFileSync("responses.json", JSON.stringify(r, null, 4))
-// )
