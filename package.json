@@ -12,6 +12,7 @@
     "dependencies": {
         "axios": "^0.21.1",
         "dayjs": "^1.10.5",
+        "dotenv": "^10.0.0",
         "fp-ts": "^2.10.5",
         "node-cron": "^3.0.0",
         "puppeteer": "^10.0.0",
