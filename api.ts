@@ -11,6 +11,9 @@ import {
 import * as E from "fp-ts/Either"
 import cron from "node-cron"
 import dayjs from "dayjs"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 export async function getSessions(
     username: string,
