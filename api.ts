@@ -6,11 +6,11 @@ import {
     SessionsResponse,
     TicketsResponse,
     UsersResponse,
+    Vehicle,
     VehiclesResponse,
 } from "./types"
 import * as E from "fp-ts/Either"
 import cron from "node-cron"
-import dayjs from "dayjs"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -75,7 +75,12 @@ export async function createTicket(
         getUser(username, password),
     ])
 
-    const vehicle = vehicles.VehicleList[0]
+    const vehicle = findVehicle(vehicles.VehicleList)
+
+    if (!vehicle) {
+        throw new Error("Unable to determine vehicle")
+    }
+
     const phoneNumber = user.MobilePhones[0]
 
     const payload = {
@@ -114,6 +119,22 @@ export async function getVehicles(
     return response.data
 }
 
+function findVehicle(vehicles: Vehicle[]): Vehicle | undefined {
+    const numberPlateOption = process.env.NUMBER_PLATE
+
+    if (!numberPlateOption) {
+        return vehicles[0]
+    }
+
+    const vehicle = vehicles.find(
+        (v) =>
+            String(v.NumberPlate).trim().toLowerCase() ===
+            String(numberPlateOption).trim().toLowerCase()
+    )
+
+    return vehicle ?? vehicles[0]
+}
+
 function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
     return {
         "Pz-ApplicationKey": options.applicationKey,
@@ -128,7 +149,7 @@ const username = process.env.AT_USERNAME
 const password = process.env.AT_PASSWORD
 let zoneId = 121033
 if (process.env.ZONE_ID) {
-	zoneId = +process.env.ZONE_ID
+    zoneId = +process.env.ZONE_ID
 }
 
 if (!username || !password) {

@@ -12,17 +12,17 @@ export interface AuthorizationOptions {
     accessToken: string
 }
 
+export interface Vehicle {
+    VehicleId: number
+    NumberPlate: string
+    Barcode: string
+    Label: string
+    VehicleStatus: string
+    StateOfRegistration: string
+}
+
 export interface VehiclesResponse {
-    VehicleList: [
-        {
-            VehicleId: number
-            NumberPlate: string
-            Barcode: string
-            Label: string
-            VehicleStatus: string
-            StateOfRegistration: string
-        }
-    ]
+    VehicleList: Vehicle[]
 }
 
 export interface SessionsResponse {
