@@ -126,6 +126,10 @@ function getAuthHeaders(options: AuthorizationOptions): Record<string, string> {
 
 const username = process.env.AT_USERNAME
 const password = process.env.AT_PASSWORD
+let zoneId = 121033
+if (process.env.ZONE_ID) {
+	zoneId = +process.env.ZONE_ID
+}
 
 if (!username || !password) {
     throw new Error("Set AT_USERNAME and AT_PASSWORD")
@@ -133,7 +137,7 @@ if (!username || !password) {
 
 const create = () => {
     console.log("Creating ticket")
-    createTicket(username, password, 15, 121033)
+    createTicket(username, password, 15, zoneId)
         .then((response) => console.log(response))
         .then(() => console.log("Created ticket"))
         .catch((err) => console.log(err))
